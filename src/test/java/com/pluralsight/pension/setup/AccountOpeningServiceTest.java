@@ -19,11 +19,12 @@ class AccountOpeningServiceTest {
     private BackgroundCheckService backgroundCheckService = mock(BackgroundCheckService.class);
     private ReferenceIdsManager referenceIdsManager = mock(ReferenceIdsManager.class);
     private AccountRepository accountRepository = mock(AccountRepository.class);
+    private AccountOpeningEventPublisher accountOpeningEventPublisher= mock(AccountOpeningEventPublisher.class);
 
     @BeforeEach
     void setUp() {
         // Replace mocks with collaborators
-        underTest = new AccountOpeningService(backgroundCheckService,referenceIdsManager,accountRepository);
+        underTest = new AccountOpeningService(backgroundCheckService,referenceIdsManager,accountRepository, accountOpeningEventPublisher);
     }
 
     @Test
