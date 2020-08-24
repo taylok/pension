@@ -1,5 +1,6 @@
 package com.pluralsight.pension.setup;
 
+import com.pluralsight.pension.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -7,15 +8,20 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class AccountOpeningServiceTest {
 
     private AccountOpeningService underTest;
+    // Call static mock method for all three collaborators
+    private BackgroundCheckService backgroundCheckService = mock(BackgroundCheckService.class);
+    private ReferenceIdsManager referenceIdsManager = mock(ReferenceIdsManager.class);
+    private AccountRepository accountRepository = mock(AccountRepository.class);
 
     @BeforeEach
     void setUp() {
-        // Without mockito, we pass nulls to the constructor for each of the class collaborators
-        underTest = new AccountOpeningService(null,null,null);
+        // Replace mocks with collaborators
+        underTest = new AccountOpeningService(backgroundCheckService,referenceIdsManager,accountRepository);
     }
 
     @Test
