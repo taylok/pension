@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 class AccountOpeningServiceTest {
@@ -40,26 +42,29 @@ class AccountOpeningServiceTest {
     public void shouldOpenAccount() throws IOException {
         final BackgroundCheckResults okBackgroundCheckResults = new BackgroundCheckResults("something not acceptable",100);
         // Stubbed BackgroundCheckResults. Unit under test asking for this data
-        when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
-                .thenReturn(okBackgroundCheckResults);
+        given(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
+                .willReturn(okBackgroundCheckResults);
         // Stubbed ReferenceIdsManager. Unit under test asking for this data
-        when(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
-                .thenReturn(ACCOUNT_ID);
+        given(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
+                .willReturn(ACCOUNT_ID);
         // Unit under Test
         final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
         // Verify behaviour of Unit under Test. Tell collaborator to do somthing
         // Argument Captor
         ArgumentCaptor<BackgroundCheckResults> backgroundCheckResultsArgumentCaptor = ArgumentCaptor.forClass(BackgroundCheckResults.class);
-        verify(accountRepository).save(eq(ACCOUNT_ID),eq(FIRST_NAME),eq(LAST_NAME),eq(TAX_ID), eq(DOB), backgroundCheckResultsArgumentCaptor.capture());
-        verify(accountOpeningEventPublisher).notify(anyString());
+        // should() can take params allowing specification of number of invocations
+        then(accountRepository).should().save(eq(ACCOUNT_ID),eq(FIRST_NAME),eq(LAST_NAME),eq(TAX_ID), eq(DOB), backgroundCheckResultsArgumentCaptor.capture());
+        then(accountOpeningEventPublisher).should().notify(anyString());
         System.out.println(backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile() + " " + backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
         // Assert methods were called
         assertEquals(okBackgroundCheckResults.getRiskProfile(), backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile());
         assertEquals(okBackgroundCheckResults.getUpperAccountLimit(), backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
         // Verify no unverified interactions with BackgroundCheck service mock
         verifyNoMoreInteractions(ignoreStubs(backgroundCheckService, referenceIdsManager));
-        verifyNoMoreInteractions(accountRepository, accountOpeningEventPublisher);
+        // verifyNoMoreInteractions(accountRepository, accountOpeningEventPublisher);
+        then(accountRepository).shouldHaveNoMoreInteractions();
+        then(accountOpeningEventPublisher).shouldHaveNoMoreInteractions();
     }
 
     @Test
