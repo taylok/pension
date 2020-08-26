@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -59,5 +60,12 @@ class AccountOpeningServiceTest {
                 .thenReturn(null);
         final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME, LAST_NAME, TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.DECLINED, accountOpeningStatus);
+    }
+
+    @Test
+    public void shouldThrowIfBackgroundChecksServiceThrows() throws IOException {
+        when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
+                .thenThrow(new IOException());
+        assertThrows(IOException.class, () -> underTest.openAccount(FIRST_NAME, LAST_NAME, TAX_ID, DOB));
     }
 }
