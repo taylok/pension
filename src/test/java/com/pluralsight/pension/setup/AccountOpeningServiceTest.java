@@ -46,6 +46,8 @@ class AccountOpeningServiceTest {
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
         verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, okBackgroundCheckResults);
         verify(accountOpeningEventPublisher).notify(ACCOUNT_ID);
+        verify(backgroundCheckService).confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB);
+        verify(referenceIdsManager).obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB));
     }
 
     @Test
