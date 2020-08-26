@@ -54,6 +54,9 @@ class AccountOpeningServiceTest {
         verify(accountRepository).save(eq(ACCOUNT_ID),eq(FIRST_NAME),eq(LAST_NAME),eq(TAX_ID), eq(DOB), backgroundCheckResultsArgumentCaptor.capture());
         verify(accountOpeningEventPublisher).notify(anyString());
         System.out.println(backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile() + " " + backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
+        // Assert methods were called
+        assertEquals(okBackgroundCheckResults.getRiskProfile(), backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile());
+        assertEquals(okBackgroundCheckResults.getUpperAccountLimit(), backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
     }
 
     @Test
