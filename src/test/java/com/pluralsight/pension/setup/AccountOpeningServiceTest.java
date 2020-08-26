@@ -94,12 +94,12 @@ class AccountOpeningServiceTest {
         final BackgroundCheckResults backgroundCheckResults = new BackgroundCheckResults("something_not_unacceptable", 100);
         when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
                 .thenReturn(backgroundCheckResults);
-        final String accountId = "someId";
+        final String accountId = "someID";
         when(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
-                .thenReturn("someID");
-        when(accountRepository.save("someID", FIRST_NAME, LAST_NAME, TAX_ID, DOB, backgroundCheckResults))
+                .thenReturn(accountId);
+        when(accountRepository.save(accountId, FIRST_NAME, LAST_NAME, TAX_ID, DOB, backgroundCheckResults))
                 .thenReturn(true);
-        when(accountOpeningEventPublisher.notify(accountId)).thenThrow(new RuntimeException());
+        doThrow(new RuntimeException()).when(accountOpeningEventPublisher).notify(accountId);
         assertThrows(RuntimeException.class, () -> underTest.openAccount(FIRST_NAME, LAST_NAME, TAX_ID, DOB));
     }
 }
