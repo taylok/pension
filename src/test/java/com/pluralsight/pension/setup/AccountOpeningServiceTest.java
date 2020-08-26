@@ -21,6 +21,7 @@ class AccountOpeningServiceTest {
     private static final String LAST_NAME = "Smith";
     private static final String TAX_ID = "123xyz9";
     private static final LocalDate DOB = LocalDate.of(1990, 1, 1);
+    private static final String ACCOUNT_ID = "some_Id";
     private AccountOpeningService underTest;
     // Call static mock method for all three collaborators
     private BackgroundCheckService backgroundCheckService = mock(BackgroundCheckService.class);
@@ -36,13 +37,14 @@ class AccountOpeningServiceTest {
 
     @Test
     public void shouldOpenAccount() throws IOException {
-        // Won't get away without the mock stubbing here!
+        final BackgroundCheckResults okBackgroundCheckResults = new BackgroundCheckResults("something not acceptable",100);
         when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
-                .thenReturn(new BackgroundCheckResults("something not acceptable", 100));
+                .thenReturn(okBackgroundCheckResults);
         when(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
-                .thenReturn("some_Id");
+                .thenReturn(ACCOUNT_ID);
         final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
+        verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, okBackgroundCheckResults);
     }
 
     @Test
