@@ -57,6 +57,8 @@ class AccountOpeningServiceTest {
         // Assert methods were called
         assertEquals(okBackgroundCheckResults.getRiskProfile(), backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile());
         assertEquals(okBackgroundCheckResults.getUpperAccountLimit(), backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
+        // Verify no unverified interactions with BackgroundCheck service mock
+        verifyNoMoreInteractions(backgroundCheckService);
     }
 
     @Test
