@@ -1,7 +1,7 @@
 package com.pluralsight.pension;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Currency;
 import java.util.Set;
 
@@ -12,13 +12,23 @@ public class Account {
     private String lastName;
     private LocalDate dob;
     private String taxId;
-    private long totalInvestmentValue;
+    private BigDecimal totalInvestmentValue;
     private Currency ccy;
     private Set<String> investments;
-    private long availableCash;
-    private LocalDateTime expectedRetirement;
+    private BigDecimal availableCash;
+    private LocalDate expectedRetirement;
+    private LocalDate openingDate;
 
-    public LocalDateTime getExpectedRetirement() {
+
+    public LocalDate getOpeningDate() {
+        return openingDate;
+    }
+
+    public void setOpeningDate(LocalDate openingDate) {
+        this.openingDate = openingDate;
+    }
+
+    public LocalDate getExpectedRetirement() {
         return expectedRetirement;
     }
 
@@ -62,11 +72,11 @@ public class Account {
         this.taxId = taxId;
     }
 
-    public long getTotalInvestmentValue() {
+    public BigDecimal getTotalInvestmentValue() {
         return totalInvestmentValue;
     }
 
-    public void setTotalInvestmentValue(long totalInvestmentValue) {
+    public void setTotalInvestmentValue(BigDecimal totalInvestmentValue) {
         this.totalInvestmentValue = totalInvestmentValue;
     }
 
@@ -86,15 +96,15 @@ public class Account {
         this.investments = investments;
     }
 
-    public long getAvailableCash() {
+    public BigDecimal getAvailableCash() {
         return availableCash;
     }
 
-    public void setAvailableCash(long availableCash) {
+    public void setAvailableCash(BigDecimal availableCash) {
         this.availableCash = availableCash;
     }
 
-    public void setExpectedRetirement(LocalDateTime expectedRetirement) {
+    public void setExpectedRetirement(LocalDate expectedRetirement) {
         this.expectedRetirement = expectedRetirement;
     }
 }

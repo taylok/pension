@@ -7,17 +7,17 @@ import java.time.LocalDate;
 
 public class AccountOpeningService {
 
-    private static final String UNACCEPTABLE_RISK_PROFILE = "HIGH";
-    private AccountOpeningEventPublisher eventPublisher;
+    public static final String UNACCEPTABLE_RISK_PROFILE = "HIGH";
     private BackgroundCheckService backgroundCheckService;
     private ReferenceIdsManager referenceIdsManager;
     private AccountRepository accountRepository;
+    private AccountOpeningEventPublisher eventPublisher;
 
 
-    public <eventPublisher> AccountOpeningService( BackgroundCheckService backgroundCheckService,
-                                                   ReferenceIdsManager referenceIdsManager,
-                                                   AccountRepository accountRepository,
-                                                   AccountOpeningEventPublisher eventPublisher ) {
+    public AccountOpeningService(BackgroundCheckService backgroundCheckService,
+                                 ReferenceIdsManager referenceIdsManager,
+                                 AccountRepository accountRepository,
+                                 AccountOpeningEventPublisher eventPublisher) {
         this.backgroundCheckService = backgroundCheckService;
         this.referenceIdsManager = referenceIdsManager;
         this.accountRepository = accountRepository;
@@ -25,7 +25,7 @@ public class AccountOpeningService {
     }
 
 
-    public AccountOpeningStatus openAccount( String firstName, String lastName, String taxId, LocalDate dob )
+    public AccountOpeningStatus openAccount(String firstName, String lastName, String taxId, LocalDate dob)
             throws IOException {
 
         final BackgroundCheckResults backgroundCheckResults = backgroundCheckService.confirm(firstName,
@@ -33,7 +33,8 @@ public class AccountOpeningService {
                 taxId,
                 dob);
 
-        if (backgroundCheckResults == null || backgroundCheckResults.getRiskProfile().equals(UNACCEPTABLE_RISK_PROFILE)) {
+        if (backgroundCheckResults == null ||
+                backgroundCheckResults.getRiskProfile().equals(UNACCEPTABLE_RISK_PROFILE)) {
             return AccountOpeningStatus.DECLINED;
         } else {
             final String id = referenceIdsManager.obtainId(firstName, "", lastName, taxId, dob);
