@@ -39,12 +39,13 @@ class AccountOpeningServiceTest {
     public void shouldOpenAccount() throws IOException {
         final BackgroundCheckResults okBackgroundCheckResults = new BackgroundCheckResults("something not acceptable",100);
         when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
-                .thenReturn(new BackgroundCheckResults("something not acceptable", 100));
+                .thenReturn(okBackgroundCheckResults);
         when(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
                 .thenReturn(ACCOUNT_ID);
         final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
-        verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, new BackgroundCheckResults("something not acceptable",100));
+        verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, okBackgroundCheckResults);
+        verify(accountOpeningEventPublisher).notify(ACCOUNT_ID);
     }
 
     @Test
