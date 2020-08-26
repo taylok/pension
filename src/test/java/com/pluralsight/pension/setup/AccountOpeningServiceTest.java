@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +39,7 @@ class AccountOpeningServiceTest {
         // Won't get away without the mock stubbing here!
         when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
                 .thenReturn(new BackgroundCheckResults("something not acceptable", 100));
-        when(referenceIdsManager.obtainId(FIRST_NAME, anyString(), LAST_NAME, TAX_ID, DOB))
+        when(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
                 .thenReturn("some_Id");
         final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
