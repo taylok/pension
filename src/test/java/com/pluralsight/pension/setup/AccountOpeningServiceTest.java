@@ -13,7 +13,12 @@ import static org.mockito.Mockito.when;
 
 class AccountOpeningServiceTest {
 
+    // Extracted constants from test
     private static final String UNACCEPTABLE_RISK_PROFILE = "HIGH";
+    private static final String FIRST_NAME = "John";
+    private static final String LAST_NAME = "Smith";
+    private static final String TAX_ID = "123xyz9";
+    private static final LocalDate DOB = LocalDate.of(1990, 1, 1);
     private AccountOpeningService underTest;
     // Call static mock method for all three collaborators
     private BackgroundCheckService backgroundCheckService = mock(BackgroundCheckService.class);
@@ -30,19 +35,19 @@ class AccountOpeningServiceTest {
     @Test
     public void shouldOpenAccount() throws IOException {
         // Won't get away without the mock stubbing here!
-        when(backgroundCheckService.confirm("John","Smith","123xyz9", LocalDate.of(1990,1,1)))
+        when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
                 .thenReturn(new BackgroundCheckResults("something not acceptable", 100));
-        when(referenceIdsManager.obtainId("John","Smith","123xyz9", LocalDate.of(1990,1,1)))
+        when(referenceIdsManager.obtainId(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
                 .thenReturn("some_Id");
-        final AccountOpeningStatus accountOpeningStatus = underTest.openAccount("John","Smith","123xyz9", LocalDate.of(1990,1,1));
+        final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
     }
 
     @Test
     public void shouldDeclineAccount() throws IOException {
-        when(backgroundCheckService.confirm("John","Smith","123", LocalDate.of(1990,1,1)))
+        when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
                 .thenReturn(new BackgroundCheckResults(UNACCEPTABLE_RISK_PROFILE, 0));
-        final AccountOpeningStatus accountOpeningStatus = underTest.openAccount("John","Smith","123", LocalDate.of(1990,1,1));
+        final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.DECLINED,accountOpeningStatus);
     }
 }
