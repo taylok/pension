@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 
 class ExternalInvestmentManagementServiceTest {
 
@@ -31,9 +31,8 @@ class ExternalInvestmentManagementServiceTest {
 
     @Test
     public void shouldBeAbleToBuyPensionFundInvestmentIfEnoughCashInAccount() throws IOException {
-        when(underTest.executeInvestmentTransaction(
-                anyString(), any(BigDecimal.class), anyString()))
-            .thenReturn(true);
+        doReturn(true).when(underTest).executeInvestmentTransaction(
+                anyString(), any(BigDecimal.class), anyString());
         Account testAccount = new Account();
         testAccount.setInvestments(new HashSet<>());
         final BigDecimal startingAccountBalance = new BigDecimal(1000000);
