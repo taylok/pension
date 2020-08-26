@@ -1,10 +1,10 @@
 package com.pluralsight.pension.investment;
 
 import com.pluralsight.pension.Account;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,6 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
+@ExtendWith(MockitoExtension.class)
 class ExternalInvestmentManagementServiceTest {
 
     private  static final String TEST_FUND_ID = "FUND_ID";
@@ -23,11 +24,6 @@ class ExternalInvestmentManagementServiceTest {
     // rather than methods we used before
     @Spy
     private ExternalInvestmentManagementService underTest;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void shouldBeAbleToBuyPensionFundInvestmentIfEnoughCashInAccount() throws IOException {
