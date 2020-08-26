@@ -58,7 +58,7 @@ class AccountOpeningServiceTest {
         assertEquals(okBackgroundCheckResults.getRiskProfile(), backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile());
         assertEquals(okBackgroundCheckResults.getUpperAccountLimit(), backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
         // Verify no unverified interactions with BackgroundCheck service mock
-        verifyNoMoreInteractions(ignoreStubs(backgroundCheckService));
+        verifyNoMoreInteractions(ignoreStubs(backgroundCheckService, referenceIdsManager));
     }
 
     @Test
