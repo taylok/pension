@@ -3,6 +3,7 @@ package com.pluralsight.pension.setup;
 import com.pluralsight.pension.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -48,8 +49,11 @@ class AccountOpeningServiceTest {
         final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
         // Verify behaviour of Unit under Test. Tell collaborator to do somthing
-        verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, okBackgroundCheckResults);
+        // Argument Captor
+        ArgumentCaptor<BackgroundCheckResults> backgroundCheckResultsArgumentCaptor = ArgumentCaptor.forClass(BackgroundCheckResults.class);
+        verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, backgroundCheckResultsArgumentCaptor.capture());
         verify(accountOpeningEventPublisher).notify(anyString());
+        System.out.println(backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile() + " " + backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
     }
 
     @Test
