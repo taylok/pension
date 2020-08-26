@@ -38,16 +38,18 @@ class AccountOpeningServiceTest {
     @Test
     public void shouldOpenAccount() throws IOException {
         final BackgroundCheckResults okBackgroundCheckResults = new BackgroundCheckResults("something not acceptable",100);
+        // Stubbed BackgroundCheckResults. Unit under test asking for this data
         when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
                 .thenReturn(okBackgroundCheckResults);
+        // Stubbed ReferenceIdsManager. Unit under test asking for this data
         when(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
                 .thenReturn(ACCOUNT_ID);
+        // Unit under Test
         final AccountOpeningStatus accountOpeningStatus = underTest.openAccount(FIRST_NAME,LAST_NAME,TAX_ID, DOB);
         assertEquals(AccountOpeningStatus.OPENED,accountOpeningStatus);
+        // Verify behaviour of Unit under Test. Tell collaborator to do somthing
         verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, okBackgroundCheckResults);
-        verify(accountOpeningEventPublisher).notify(ACCOUNT_ID);
-        verify(backgroundCheckService).confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB);
-        verify(referenceIdsManager).obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB));
+        verify(accountOpeningEventPublisher).notify(anyString());
     }
 
     @Test
