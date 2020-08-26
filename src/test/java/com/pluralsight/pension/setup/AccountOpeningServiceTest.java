@@ -77,4 +77,16 @@ class AccountOpeningServiceTest {
                 .thenThrow(new RuntimeException());
         assertThrows(RuntimeException.class, () -> underTest.openAccount(FIRST_NAME, LAST_NAME, TAX_ID, DOB));
     }
+
+    @Test
+    public void shouldThrowIfAccountRepositoryThrows() throws IOException {
+        final BackgroundCheckResults backgroundCheckResults = new BackgroundCheckResults("something_not_unacceptable", 100);
+        when(backgroundCheckService.confirm(FIRST_NAME, LAST_NAME, TAX_ID, DOB))
+                .thenReturn(backgroundCheckResults);
+        when(referenceIdsManager.obtainId(eq(FIRST_NAME), anyString(), eq(LAST_NAME), eq(TAX_ID), eq(DOB)))
+                .thenReturn("someID");
+        when(accountRepository.save("someID", FIRST_NAME, LAST_NAME, TAX_ID, DOB, backgroundCheckResults))
+                .thenThrow(new RuntimeException());
+        assertThrows(RuntimeException.class, () -> underTest.openAccount(FIRST_NAME, LAST_NAME, TAX_ID, DOB));
+    }
 }
