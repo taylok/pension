@@ -51,7 +51,7 @@ class AccountOpeningServiceTest {
         // Verify behaviour of Unit under Test. Tell collaborator to do somthing
         // Argument Captor
         ArgumentCaptor<BackgroundCheckResults> backgroundCheckResultsArgumentCaptor = ArgumentCaptor.forClass(BackgroundCheckResults.class);
-        verify(accountRepository).save(ACCOUNT_ID,FIRST_NAME,LAST_NAME,TAX_ID, DOB, backgroundCheckResultsArgumentCaptor.capture());
+        verify(accountRepository).save(eq(ACCOUNT_ID),eq(FIRST_NAME),eq(LAST_NAME),eq(TAX_ID), eq(DOB), backgroundCheckResultsArgumentCaptor.capture());
         verify(accountOpeningEventPublisher).notify(anyString());
         System.out.println(backgroundCheckResultsArgumentCaptor.getValue().getRiskProfile() + " " + backgroundCheckResultsArgumentCaptor.getValue().getUpperAccountLimit());
     }
